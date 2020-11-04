@@ -6,9 +6,17 @@ a virtual piggy bank app
 
 > yarn dev
 
-### Or to deploy
+### To deploy
 > yarn build
 
 > yarn start
+
+## Backend server
+(first time only, to create a virtual env with python3: > python3 -m venv env)
+> cd server
+
+> source env/bin/activate
+
+> python manage.py runserver localhost:8000
 
 
