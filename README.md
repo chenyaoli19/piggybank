@@ -13,7 +13,7 @@ $ yarn build
 $ yarn start
 ```
 
-## Backend server
+## backend server
 first time only, to create a virtual env with python3: `python3 -m venv env`
 ```
 $ cd server
