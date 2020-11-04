@@ -12,7 +12,7 @@ a virtual piggy bank app
 > yarn start
 
 ## Backend server
-(first time only, to create a virtual env with python3: > python3 -m venv env)
+first time only, to create a virtual env with python3: `python3 -m venv env`
 > cd server
 
 > source env/bin/activate
