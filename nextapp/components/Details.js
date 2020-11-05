@@ -1,12 +1,34 @@
-import { Button, Card, Col, Input, Row, Table } from 'antd'
-import moment from 'moment'
-import { UserOutlined } from '@ant-design/icons'
+import { Col, Row, Spin } from 'antd'
+import useSWR, { mutate } from 'swr';
+import { fetcher } from './RestService';
+import moment from 'moment';
+import { useState } from 'react';
 
 import SavingHistory from './SavingHistory'
+import CardArea from './CardArea'
 
+const URL = "http://127.0.0.1:8000/api/record/";
 const Details = () => {
-  const today = moment().format('MM/DD/YYYY, dddd');
-  const total = 40;
+  const { data, error } = useSWR(URL, fetcher);
+  if (error) return <div>failed to load</div>
+  if (!data) return <div className='center pt-5 mt-5'><Spin /></div>
+  
+  const records = data.map((d, idx)=>{
+    return {
+      'key': idx,
+      'date': moment(d.date).format('MM/DD/YYYY'),
+      'amount': '$' + d.amount.toString(),
+      'total': '$' + d.total.toString()
+    }
+  });
+
+  const total = data[0].total;
+  const isTodayRecorded = !moment().isAfter(data[0].date, 'day');
+
+  const updateSuccess = (response) => {
+//    mutate(URL, {...response});
+  }
+
   return(
     <div className="p-20">
       <Row>
@@ -16,23 +38,13 @@ const Details = () => {
           <Row justify="center">
             <Col span={4}/>
             <Col span={16}>
-              <Card
-                hoverable
-                style={{ width: '100%' }}
-                className="center"
-              >
-                <p><img style={{width: 90}} src="/images/piggy.png" /></p>
-                <p><b>Today:</b> {today}</p>
-                <h3 className="mb-3"><b>My savings</b></h3>
-                <p className="m-3"><Input size="large" placeholder="10" prefix={<b>$</b>} /></p>
-                <p className="m-3"><Button block type="primary" size="large">Save</Button></p>
-              </Card>
+              <CardArea isUpdate={isTodayRecorded} updateSuccess={updateSuccess}/>
             </Col>
             <Col span={4}/>
           </Row>
         </Col>
         <Col span={12}>
-          <SavingHistory />
+          <SavingHistory records={records}/>
         </Col>
       </Row>
     </div>

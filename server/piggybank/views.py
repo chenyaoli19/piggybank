@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
 from .models import Record
-from .serializers import RecordSerializer
+from .serializers import RecordSerializer, RecordWithTotalSerializer
 
 
 def index(request):
@@ -25,6 +25,7 @@ class RecordView(APIView):
         :return:
         '''
         amount = request.data.get("amount")
+        print(amount)
         if not amount:
             return Response({'error': 'amount cannot be empty'}, status=status.HTTP_400_BAD_REQUEST)
         amount = int(amount)
@@ -35,15 +36,16 @@ class RecordView(APIView):
             latest_record.amount = amount
             latest_record.date = now
             latest_record.save()
-            serializer = RecordSerializer(latest_record)
-            res = serializer.data
         else:
             record = Record(date=now, amount=amount)
             record.save()
-            serializer = RecordSerializer(record)
-            res = serializer.data
 
-        return Response(res, status=status.HTTP_200_OK)
+        records = Record.objects.annotate(total=Window(Sum('amount'), order_by=F('date').asc())) \
+            .values('id', 'date', 'amount', 'total').order_by('-date')
+
+        serializer = RecordWithTotalSerializer(records, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get(self, request):
         '''
@@ -52,8 +54,8 @@ class RecordView(APIView):
         :return:
         '''
         # records = Record.objects.order_by('-date').all()
-        records = Record.objects.annotate(total=Window(Sum('amount'), order_by=F('id').asc()))\
+        records = Record.objects.annotate(total=Window(Sum('amount'), order_by=F('date').asc()))\
             .values('id', 'date', 'amount', 'total').order_by('-date')
 
-        serializer = RecordSerializer(records, many=True)
+        serializer = RecordWithTotalSerializer(records, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
