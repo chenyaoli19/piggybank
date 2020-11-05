@@ -30,15 +30,19 @@ class RecordView(APIView):
         now = timezone.now()
 
         latest_record = Record.objects.order_by('-date').first()
-        if now.date() == latest_record.date.date():
+        if latest_record and now.date() == latest_record.date.date():
             latest_record.amount = amount
             latest_record.date = now
             latest_record.save()
+            serializer = RecordSerializer(latest_record)
+            res = serializer.data
         else:
             record = Record(date=now, amount=amount)
             record.save()
+            serializer = RecordSerializer(record)
+            res = serializer.data
 
-        return Response({'success': True}, status=status.HTTP_200_OK)
+        return Response(res, status=status.HTTP_200_OK)
 
     def get(self, request):
         '''
@@ -47,5 +51,6 @@ class RecordView(APIView):
         :return:
         '''
         records = Record.objects.order_by('-date').all()
+        # records = Record.annotate(cumsum=Window(Sum('amount'), order_by=)).objects.order_by('-date').all()
         serializer = RecordSerializer(records, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
