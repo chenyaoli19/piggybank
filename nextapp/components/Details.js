@@ -21,7 +21,7 @@ const Details = () => {
                 style={{ width: '100%' }}
                 className="center"
               >
-                <p><img style={{width: 80}} src="/images/piggy.png" /></p>
+                <p><img style={{width: 90}} src="/images/piggy.png" /></p>
                 <p><b>Today:</b> {today}</p>
                 <h3 className="mb-3"><b>My savings</b></h3>
                 <p className="m-3"><Input size="large" placeholder="10" prefix={<b>$</b>} /></p>

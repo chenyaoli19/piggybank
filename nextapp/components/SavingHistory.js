@@ -38,44 +38,64 @@ const SavingHistory = props => {
       total: '10'
     },
     {
-      key: '1',
+      key: '4',
       date: '11/3/2020',
       amount: 10,
       total: '30'
     },
     {
-      key: '2',
+      key: '5',
       date: '11/2/2020',
       amount: 10,
       total: '20'
     },
     {
-      key: '3',
+      key: '6',
       date: '11/1/2020',
       amount: 10,
       total: '10'
     },
     {
-      key: '1',
+      key: '7',
       date: '11/3/2020',
       amount: 10,
       total: '30'
     },
     {
-      key: '2',
+      key: '8',
       date: '11/2/2020',
       amount: 10,
       total: '20'
     },
     {
-      key: '3',
+      key: '9',
+      date: '11/1/2020',
+      amount: 10,
+      total: '10'
+    },
+    {
+      key: '10',
+      date: '11/3/2020',
+      amount: 10,
+      total: '30'
+    },
+    {
+      key: '11',
+      date: '11/2/2020',
+      amount: 10,
+      total: '20'
+    },
+    {
+      key: '12',
       date: '11/1/2020',
       amount: 10,
       total: '10'
     },
   ];
   return (
-    <Table columns={columns} dataSource={data} />
+    <div className="mt-3 mr-5">
+      <Table columns={columns} dataSource={data} />
+    </div>
   )
 }
 
