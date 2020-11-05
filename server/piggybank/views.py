@@ -1,3 +1,4 @@
+from django.db.models import F, Sum, Window
 from django.http import HttpResponse
 from django.utils import timezone
 
@@ -50,7 +51,9 @@ class RecordView(APIView):
         :param request:
         :return:
         '''
-        records = Record.objects.order_by('-date').all()
-        # records = Record.annotate(cumsum=Window(Sum('amount'), order_by=)).objects.order_by('-date').all()
+        # records = Record.objects.order_by('-date').all()
+        records = Record.objects.annotate(total=Window(Sum('amount'), order_by=F('id').asc()))\
+            .values('id', 'date', 'amount', 'total').order_by('-date')
+
         serializer = RecordSerializer(records, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
